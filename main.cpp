@@ -14,7 +14,8 @@
 
 using namespace std;
 
-bool errorMode = true;
+bool breadthLocked = false;
+bool lengthLocked = false;
 vector< vector<int> > localArea;
 int agentCurrentLocationLength;
 int agentCurrentLocationBreadth;
@@ -23,9 +24,7 @@ int agentCurrentLocationBreadth;
 class agent{
 public:
     void turnLeft();
-    void turnRight();
     void moveForward();
-    void turnAround();
 private:
 };
 
@@ -34,17 +33,10 @@ void agent::turnLeft(){
     
 }
 
-void agent::turnRight(){
-    
-}
-
 void agent::moveForward(){
     
 }
 
-void agent::turnAround(){
-    
-}
 
 
 class target{
@@ -58,6 +50,7 @@ public:
      void createEnvironment(int length, int breadth);
     void fixTargets(int targetLocationLength, int targetLocationBreadth, int homeAgentLength, int homeAgentBreadth);
     void print(int length,int breadth);
+    void createRoadBlocks(int roadblocksLocation[][2],int length,int breadth);
 private:
    
 };
@@ -76,6 +69,14 @@ void environment::createEnvironment(int length, int breadth){
 void environment::fixTargets(int targetLocationLength, int targetLocationBreadth, int homeAgentLength, int homeAgentBreadth){
     localArea.at(targetLocationBreadth).at(targetLocationLength)=2;
     localArea.at(homeAgentBreadth).at(homeAgentLength)=2;
+}
+
+void environment::createRoadBlocks(int roadblocksLocation[][2],int length,int breadth){
+    int num = (sizeof(roadblocksLocation)/2);
+    for (int i=0; i<num; i++) {
+        localArea.at(roadblocksLocation[i][0]).at(roadblocksLocation[i][1]) = -1;
+        //print(length, breadth);
+    }
 }
 
 void environment::print(int length,int breadth){
@@ -112,6 +113,14 @@ int main(int argc, const char * argv[]) {
     cout<<"\n\n\n"<<endl;
     envi.print(length, breadth);
     cout<<"\n\n\n"<<endl;
+    
+    /*
+     Creates roadblocks
+     */
+    int roadblocksLocation[4][2]={{1,2},{2,3},{4,5},{6,7}};
+    envi.createRoadBlocks(roadblocksLocation, length, breadth);
+    envi.print(length, breadth);
+    cout<<"\n\n\n"<<endl;
     /*
      Below code navigates the agent
      For now movement is Grid
@@ -119,27 +128,19 @@ int main(int argc, const char * argv[]) {
     //Check if we can take one step in length
      */
     
-    while ((agentCurrentLocationLength != targetLocationLength) || (agentCurrentLocationBreadth != targetLocationBreadth)) {
-        if ((agentCurrentLocationLength+1) == length) {
-            agentCurrentLocationLength = 0;
-            agentCurrentLocationBreadth++;
-        }
-        if ((localArea.at(agentCurrentLocationBreadth).at(agentCurrentLocationLength) != localArea.at(agentCurrentLocationBreadth+1).at(agentCurrentLocationLength+1)) || ((localArea.at(agentCurrentLocationBreadth).at(agentCurrentLocationLength) !=1 ))) {
-//            localArea.at(agentCurrentLocationBreadth).at(agentCurrentLocationLength+1)=1;
-            if (localArea.at(agentCurrentLocationBreadth).at(agentCurrentLocationLength)==0) {
-                localArea.at(agentCurrentLocationBreadth).at(agentCurrentLocationLength)=1;
-            }
-            ((localArea.at(agentCurrentLocationBreadth).at(agentCurrentLocationLength+1)!=1)&&(localArea.at(agentCurrentLocationBreadth).at(agentCurrentLocationLength+1)!=0))?:localArea.at(agentCurrentLocationBreadth).at(agentCurrentLocationLength+1)=1;
-            agentCurrentLocationLength++;
-        }
-        
-//        if ((localArea.at(agentCurrentLocationBreadth).at(agentCurrentLocationLength) != localArea.at(agentCurrentLocationBreadth+1).at(agentCurrentLocationLength+1))) {
-//                        
-//        }else if (<#condition#>){
+//    while ((agentCurrentLocationLength != targetLocationLength) || (agentCurrentLocationBreadth != targetLocationBreadth)) {
+//        if (((agentCurrentLocationLength+1) == length)||(agentCurrentLocationLength)<=0) {
+//            lengthLocked =true;
+//        }
+//        if(((agentCurrentLocationBreadth+1) == breadth)||(agentCurrentLocationBreadth<=0)){
+//            breadthLocked=true;
+//        }
+//        if(lengthLocked == false && (localArea.at(agentCurrentLocationBreadth).at(agentCurrentLocationLength+1)) == 0){
+//            agentMovement.moveForward();
+//        }
+//        if (lengthLocked == true && breadthLocked == true) {
 //            
 //        }
-        envi.print(length, breadth);
-        cout<<"\n\n\n"<<endl;
-    }
+//    }
     return 0;
 }
